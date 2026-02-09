@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tìm vị trí mã hàng</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 { text-align: center; margin-bottom: 20px; }
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+    .item {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    .ma {
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .vi-tri {
+      margin-top: 4px;
+      color: #2e7d32;
+    }
+    .empty {
+      color: #d32f2f;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>🔎 Tra cứu vị trí kho</h2>
+
+  <input
+    id="keyword"
+    placeholder="Nhập mã hàng hoặc vị trí (VD: 001, VP8, T3...)"
+    oninput="search()"
+    autocomplete="off"
+  />
+
+  <div id="result"></div>
+</div>
+
+<script>
+let data = [];
+
+fetch("vitri.csv")
+  .then(res => res.text())
+  .then(text => {
+    const rows = text.trim().split("\n");
+    const headers = rows.shift().split(",");
+
+    data = rows.map(row => {
+      const values = row.split(",");
+      let obj = {};
+      headers.forEach((h, i) => {
+        obj[h.trim()] = values[i]?.trim() || "";
+      });
+      return obj;
+    });
+  });
+
+function normalize(str) {
+  return str
+    .toUpperCase()
+    .replace(/\s+/g, "");
+}
+
+function search() {
+  const key = normalize(document.getElementById("keyword").value);
+  const result = document.getElementById("result");
+  result.innerHTML = "";
+
+  if (!key) return;
+
+  const matched = data.filter(item => {
+    const ma = normalize(item.ma_hang);
+    const vt = normalize(item.vi_tri);
+    return ma.includes(key) || vt.includes(key);
+  });
+
+  if (matched.length === 0) {
+    result.innerHTML = `<div class="empty">❌ Không tìm thấy kết quả phù hợp</div>`;
+    return;
+  }
+
+  matched.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = `
+      <div class="ma">${item.ma_hang}</div>
+      <div class="vi-tri">📍 ${item.vi_tri}</div>
+    `;
+    result.appendChild(div);
+  });
+}
+</script>
+
+</body>
+</html>
