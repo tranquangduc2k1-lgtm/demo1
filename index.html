@@ -11,7 +11,7 @@
       padding: 20px;
     }
     .container {
-      max-width: 600px;
+      max-width: 500px;
       margin: auto;
       background: #fff;
       padding: 25px;
@@ -50,11 +50,11 @@
 <body>
 
 <div class="container">
-  <h2>🔎 Tra cứu vị trí kho</h2>
+  <h2>🔎 Tra cứu vị trí mã giấy</h2>
 
   <input
     id="keyword"
-    placeholder="Nhập mã hàng hoặc vị trí (VD: 001, VP8, T3...)"
+    placeholder="Nhập mã hàng hoặc vị trí (VD: 001, 388, ...)"
     oninput="search()"
     autocomplete="off"
   />
@@ -110,7 +110,7 @@ function search() {
     div.className = "item";
     div.innerHTML = `
       <div class="ma">${item.ma_hang}</div>
-      <div class="vi-tri">📍 ${item.vi_tri}</div>
+      <div class="vi-tri">Vị trí: ${item.vi_tri}</div>
     `;
     result.appendChild(div);
   });
@@ -119,3 +119,4 @@ function search() {
 
 </body>
 </html>
+
